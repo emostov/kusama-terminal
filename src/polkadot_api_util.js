@@ -2,8 +2,8 @@
 
 export const headers = {};
 export const blocks = {};
-export const nodeData = [];
-export const linkData = [];
+export const nodes = [];
+export const links = [];
 
 export function subscribeToBlockHeaders(api) {
   api.rpc.chain.subscribeNewHeads((lastHeader) => {
@@ -13,35 +13,46 @@ export function subscribeToBlockHeaders(api) {
 
     api.rpc.chain.getBlock(lastHeader.hash, (data) => {
       const { block } = data;
-      // console.log(block.header.toString());
-      // const strBlockNum = block.header.number.toString();
-      // console.log(block);
 
-      // nodeData.push({
-      //   id: strBlockNum,
-      //   group: 1,
-      // });
+      const strBlockNum = block.header.number.toString();
+      console.log(strBlockNum);
 
-      // const prevBlock = nodeData[nodeData.length - 2]
-      // if (prevBlock) {
-      //   linkData.push({
-      //     source: prevBlock.id,
-      //     target: strBlockNum,
-      //   });
-      // }
+      // Loop through the blocks extrinsics
+      let secondsTime;
+      block.extrinsics.forEach((ex) => {
 
-      data.block.extrinsics.forEach((ex) => {
+        // check to see if the extrinsic is an inherent of set time
         if (ex.callIndex.toString() === '2,0') {
-          console.log('amazing');
-          const time = Date.now(ex.args.toString())
-          console.log(time);
-        };
-        console.log(ex.args.toString());
-        console.log(ex.callIndex.toString());
-        // console.log(ex.args);
-        console.log(ex.toString());
-        console.log();
+          const intTime = parseInt(ex.args.toString(), 10);
+          secondsTime = Math.floor(intTime / 1000);
+        }
       });
+
+      // Get the previous block data by getting the previous node
+      const prevBlock = nodes[nodes.length - 1];
+
+      // Get the time between the timestamp of the current block and the
+      // previous block
+      const productionTime = prevBlock && prevBlock.timeStamp
+        ? secondsTime - prevBlock.timeStamp : 6;
+
+      // Create node object add add to array of nodes
+      nodes.push({
+        id: strBlockNum,
+        group: 1,
+        timeStamp: secondsTime,
+        productionTime,
+      });
+      console.log(nodes);
+
+      // if this is not the first block create a link
+      if (prevBlock) {
+        links.push({
+          source: prevBlock.id,
+          target: strBlockNum,
+        });
+      }
+
     });
   });
 
