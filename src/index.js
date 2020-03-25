@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-import { subscribeToBlockHeaders, headers } from '../src/polkadot_api_util';
+import { subscribeToBlockHeaders, headers, blocks } from '../src/polkadot_api_util';
 
 const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 

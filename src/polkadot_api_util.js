@@ -8,11 +8,9 @@ export function subscribeToBlockHeaders(api) {
     headers[lastHeader.number] = lastHeader;
 
     api.rpc.chain.getBlock(lastHeader.hash, (data) => {
-
-      // console.log(data.toString());
-
       data.block.extrinsics.forEach((ex) => {
-        console.log(ex);
+        console.log(ex.toString());
+        console.log(ex.signer.toString());
       });
     });
 
