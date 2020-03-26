@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@polkadot/api": "^1.8.1",
+    "bootstrap": "^4.4.1",
+    "d3": "^5.15.0",
     "d3-drag": "^1.2.5",
     "d3-force": "^2.0.1"
   }

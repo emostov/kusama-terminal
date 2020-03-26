@@ -1,5 +1,7 @@
 // import { ApiPromise, WsProvider } from '@polkadot/api';
 
+import startGraph from './graph.js'
+
 export const headers = {};
 export const blocks = {};
 export const nodes = [];
@@ -43,6 +45,7 @@ export function subscribeToBlockHeaders(api) {
         timeStamp: secondsTime,
         productionTime,
       });
+
       console.log(nodes);
 
       // if this is not the first block create a link
@@ -53,6 +56,10 @@ export function subscribeToBlockHeaders(api) {
         });
       }
 
+      // Pass in a json object of the nodes and links
+      const blockNodesAndLinksJSON = JSON.stringify({ nodes, links });
+      console.log(blockNodesAndLinksJSON);
+      startGraph(blockNodesAndLinksJSON);
     });
   });
 
