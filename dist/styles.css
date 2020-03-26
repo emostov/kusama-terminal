@@ -36,7 +36,7 @@ p{
   margin: 0;
 }
 
-.terminal{
+#terminal{
   margin-top: 20px;
 }
 
@@ -51,6 +51,6 @@ header{
   display: flex;
   justify-content: space-between;
   margin-bottom: 40px;
-  
+
 }
 

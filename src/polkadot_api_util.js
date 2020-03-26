@@ -1,34 +1,33 @@
 // import { ApiPromise, WsProvider } from '@polkadot/api';
 
-import startGraph from './graph.js'
+
+import { stringToNode } from './dom_util';
 
 export const headers = {};
 export const blocks = [];
 export const nodes = [];
 export const links = [];
 
-export function subscribeToBlockHeaders(api) {
+export function subscribeToBlockHeaders(api, terminal) {
   api.rpc.chain.subscribeNewHeads((lastHeader) => {
     headers[lastHeader.number] = lastHeader;
 
-    // console.log(lastHeader.toString());
+    console.log(lastHeader.toString());
 
     api.rpc.chain.getBlock(lastHeader.hash, (data) => {
       const { block } = data;
-      console.log(block.toString());
+      // console.log(block.toString());
       const strBlockNum = block.header.number.toString();
-      console.log(strBlockNum);
+      // console.log(strBlockNum);
 
       // Loop through the blocks extrinsics
       let secondsTime;
       block.extrinsics.forEach((ex) => {
-
         // check to see if the extrinsic is an inherent of set time
         if (ex.callIndex.toString() === '2,0') {
           const intTime = parseInt(ex.args.toString(), 10);
           secondsTime = Math.floor(intTime / 1000);
         }
-
       });
 
       // Get the previous block data by getting the previous node
@@ -46,16 +45,24 @@ export function subscribeToBlockHeaders(api) {
         productionTime,
       };
 
+      // Create DOM elemnts to add and add to DOM
+      const blockNumP = document.createElement('p');
+      blockNumP.setInnerHTML = `Block number: ${strBlockNum}`;
+      terminal.append(blockNumP);
+
+      const timeStampP = document.createElement('p');
+      timeStampP.setInnerText = 'hi';
+      // timeStampP.setInnerText = `Time stamp: ${secondsTime}`;
+      terminal.append(timeStampP);
+
+      const time = stringToNode()
+
       blocks.push(blockObj);
     });
   });
-
-
 }
 
-export async function getAddressInfo() {
-  return -1;
-}
+
 
 /**
  * Notes:
