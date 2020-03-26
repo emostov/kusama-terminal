@@ -22,7 +22,7 @@ body {
 }
 
 .logo{
-  max-width: 135px!important;
+  max-width: 135px;
 }
 
 p{
@@ -48,7 +48,7 @@ p{
 
 header{
   border-bottom: 1px solid  #e6007a;
-  box-shadow: 0 0 30px 40px #141414;
+  box-shadow: 0 5px 40px 40px #141414;
   display: flex;
   justify-content: space-between;
   margin-bottom: 40px;
@@ -58,12 +58,6 @@ header{
   height: 25px;
   cursor: pointer;
   padding: 5px;
-  /* padding-left: 5px;
-  padding-top: 2px;
-  padding-left: 15px;
-  padding-bottom: 2px;
-  padding-right: 10px; */
-  /* margin: 5px; */
   filter: brightness(80%);
 }
 
