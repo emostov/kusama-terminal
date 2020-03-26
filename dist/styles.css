@@ -2,6 +2,12 @@
   margin: 0 auto;
 } */
 
+body {
+  font-family: 'Space Mono', monospace !important;
+  background: black !important;
+  color: white
+}
+
 .fnt{
   font-family: 'Space Mono', monospace;
 }
@@ -15,10 +21,8 @@
   left: 100px;
 }
 
-body {
-  font-family: 'Space Mono', monospace !important;
-  background: black !important;
-  color: white
+.logo{
+  width: 135px;
 }
 
 p{
@@ -50,6 +54,23 @@ header{
   margin-bottom: 40px;
 }
 
+.git {
+  height: 25px;
+  cursor: pointer;
+  padding: 5px;
+  /* padding-left: 5px;
+  padding-top: 2px;
+  padding-left: 15px;
+  padding-bottom: 2px;
+  padding-right: 10px; */
+  /* margin: 5px; */
+  filter: brightness(80%);
+}
+
+a.git {
+  height: 35px;
+}
+
 @media only screen and (max-width: 600px) {
   .logo{
     width: 33%;
@@ -58,4 +79,6 @@ header{
     font-size: 13px;
   }
 }
+
+
 
