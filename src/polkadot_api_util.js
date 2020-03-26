@@ -43,6 +43,7 @@ export function subscribeToBlockHeaders(api, terminal) {
         productionTime,
         extrinsicCount: block.extrinsics.length,
         hash: lastHeader.hash,
+        parentHash: lastHeader.parentHash,
       };
       blocks.push(blockObj);
       // Create DOM elemnts to add and add to DOM

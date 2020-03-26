@@ -1,12 +1,11 @@
-/* .center {
-  margin: 0 auto;
-} */
 
 body {
   font-family: 'Space Mono', monospace !important;
   background: black !important;
   color: white;
   margin: 0!important;
+  text-overflow: ellipsis!important;
+  text-overflow: hidden!important;
 }
 
 .fnt{
@@ -24,7 +23,6 @@ body {
 
 .logo{
   max-width: 135px;
-  
 }
 
 .logo, main {
@@ -58,8 +56,8 @@ a:hover {
 
 a {
   text-decoration: none;
+  color: rgb(93, 93, 243)
 }
-
 
 
 header{
@@ -83,9 +81,7 @@ a.git {
 }
 
 @media only screen and (max-width: 600px) {
-  .logo{
-    width: 33%;
-  }
+
   body {
     font-size: 13px;
   }
