@@ -19,6 +19,7 @@ export function subscribeToBlockHeaders(api, terminal) {
 
       // Loop through the blocks extrinsics
       let secondsTime;
+      console.log(block.extrinsics.toString())
       block.extrinsics.forEach((ex) => {
         // check to see if the extrinsic is an inherent of set time
         if (ex.callIndex.toString() === '2,0') {

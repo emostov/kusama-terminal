@@ -7,7 +7,6 @@ const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 
 window.addEventListener('DOMContentLoaded', () => {
   const terminal = document.getElementById('terminal');
-  console.log(terminal);
 
   // Create welcome message
   const welcomeMsg = stringToNode(

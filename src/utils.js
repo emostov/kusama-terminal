@@ -33,11 +33,9 @@ export function displayBlock(block, terminal) {
     hash,
     parentHash
   } = block;
-  // Create DOM elemnts to add and add to DOM
-
 
   const blockDiv = stringToNode(`
-    <div id=${hash} > 
+    <div id=${hash} class='glitch-outer'> 
 
       <div class='glitch-outer'> 
         <p class="b" >Block number: 
@@ -86,8 +84,6 @@ export function displayBlock(block, terminal) {
         <p class="b">Total extrinsics: ${extrinsicCount}</p>
         <p class="b">Total extrinsics: ${extrinsicCount}</p>
       </div>
-        
-        
         
         <br/>
       </div>
