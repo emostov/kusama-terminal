@@ -3,7 +3,7 @@
 import startGraph from './graph.js'
 
 export const headers = {};
-export const blocks = {};
+export const blocks = [];
 export const nodes = [];
 export const links = [];
 
@@ -15,7 +15,7 @@ export function subscribeToBlockHeaders(api) {
 
     api.rpc.chain.getBlock(lastHeader.hash, (data) => {
       const { block } = data;
-
+      console.log(block.toString());
       const strBlockNum = block.header.number.toString();
       console.log(strBlockNum);
 
@@ -28,45 +28,32 @@ export function subscribeToBlockHeaders(api) {
           const intTime = parseInt(ex.args.toString(), 10);
           secondsTime = Math.floor(intTime / 1000);
         }
+
       });
 
       // Get the previous block data by getting the previous node
-      const prevBlock = nodes[nodes.length - 1];
+      const prevBlock = block[blocks.length - 1];
 
       // Get the time between the timestamp of the current block and the
       // previous block
       const productionTime = prevBlock && prevBlock.timeStamp
         ? secondsTime - prevBlock.timeStamp : 6;
 
-      // Create node object add add to array of nodes
-      nodes.push({
-        id: strBlockNum,
-        group: 1,
+      // Creat block instance
+      const blockObj = {
+        number: strBlockNum,
         timeStamp: secondsTime,
         productionTime,
-      });
+      };
 
-      console.log(nodes);
-
-      // if this is not the first block create a link
-      if (prevBlock) {
-        links.push({
-          source: prevBlock.id,
-          target: strBlockNum,
-        });
-      }
-
-      // Pass in a json object of the nodes and links
-      const blockNodesAndLinksJSON = JSON.stringify({ nodes, links });
-      console.log(blockNodesAndLinksJSON);
-      startGraph(blockNodesAndLinksJSON);
+      blocks.push(blockObj);
     });
   });
 
 
 }
 
-export async function getAddressInfor() {
+export async function getAddressInfo() {
   return -1;
 }
 

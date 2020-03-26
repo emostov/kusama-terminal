@@ -1,0 +1,19 @@
+.center {
+  margin: 0 auto;
+}
+
+/* img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+} */
+
+.fnt{
+  font-family: 'Space Mono', monospace;
+}
+
+.pink{
+  color: #e6007a
+}
+
