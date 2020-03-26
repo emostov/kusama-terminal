@@ -5,7 +5,8 @@
 body {
   font-family: 'Space Mono', monospace !important;
   background: black !important;
-  color: white
+  color: white;
+  margin: 0!important;
 }
 
 .fnt{
@@ -23,6 +24,11 @@ body {
 
 .logo{
   max-width: 135px;
+  
+}
+
+.logo, main {
+  padding-left: 10px;
 }
 
 p{
@@ -52,6 +58,7 @@ header{
   display: flex;
   justify-content: space-between;
   margin-bottom: 40px;
+  min-width: 100%;
 }
 
 .git {
