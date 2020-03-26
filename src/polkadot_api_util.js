@@ -1,7 +1,5 @@
-// import { ApiPromise, WsProvider } from '@polkadot/api';
 
-
-import { stringToNode } from './dom_util';
+import { stringToNode, displayBlock } from './utils';
 
 export const headers = {};
 export const blocks = [];
@@ -14,11 +12,10 @@ export function subscribeToBlockHeaders(api, terminal) {
 
     console.log(lastHeader.toString());
 
+    // Use the hash to fetch the corresponding block
     api.rpc.chain.getBlock(lastHeader.hash, (data) => {
       const { block } = data;
-      // console.log(block.toString());
       const strBlockNum = block.header.number.toString();
-      // console.log(strBlockNum);
 
       // Loop through the blocks extrinsics
       let secondsTime;
@@ -39,15 +36,17 @@ export function subscribeToBlockHeaders(api, terminal) {
         ? secondsTime - prevBlock.timeStamp : 6;
 
       // Creat block instance
+      // Add signed extrinsic count, total event count
       const blockObj = {
         number: strBlockNum,
         timeStamp: secondsTime,
         productionTime,
+        extrinsicCount: block.extrinsics.length,
+        hash: lastHeader.hash,
       };
-
+      blocks.push(blockObj);
       // Create DOM elemnts to add and add to DOM
-      if (!blocks.length) {
-
+      if (blocks.length === 1) {
         const message = stringToNode(`
           <div>
             <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
@@ -55,19 +54,11 @@ export function subscribeToBlockHeaders(api, terminal) {
             <br/>
           </div>
         `);
-        // terminal.append(succesus);
-        // terminal.append(incoming);
         terminal.append(message);
       }
-      const number = stringToNode(`<p>Block number: ${strBlockNum}</p>`);
-      const time = stringToNode(`<p>Time stamp: ${secondsTime}</p>`);
-      const br = stringToNode('<br/>');
-      terminal.append(number);
-      terminal.append(time);
-      terminal.append(br);
 
-
-      blocks.push(blockObj);
+      // Add block to terminal node
+      displayBlock(blockObj, terminal);
     });
   });
 }
