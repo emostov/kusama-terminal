@@ -22,7 +22,7 @@ body {
 }
 
 .logo{
-  width: 135px;
+  max-width: 135px!important;
 }
 
 p{
