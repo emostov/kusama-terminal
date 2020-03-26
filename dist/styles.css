@@ -2,6 +2,10 @@
   margin: 0 auto;
 }
 
+/* .logo{
+  width: 20%;
+} */
+
 /* img {
   display: block;
   margin-left: auto;
@@ -15,5 +19,38 @@
 
 .pink{
   color: #e6007a
+}
+
+.title {
+  left: 50%;
+  left: 100px;
+}
+
+body {
+  font-family: 'Space Mono', monospace !important;
+  background: black !important;
+  color: white
+}
+
+p{
+  margin: 0;
+}
+
+.terminal{
+  margin-top: 20px;
+}
+
+.grn{
+  color: #32CD32;
+
+}
+
+header{
+  border-bottom: 1px solid  #e6007a;
+  box-shadow: 0 0 30px 40px #141414;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  
 }
 
