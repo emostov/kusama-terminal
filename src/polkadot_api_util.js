@@ -46,22 +46,31 @@ export function subscribeToBlockHeaders(api, terminal) {
       };
 
       // Create DOM elemnts to add and add to DOM
-      const blockNumP = document.createElement('p');
-      blockNumP.setInnerHTML = `Block number: ${strBlockNum}`;
-      terminal.append(blockNumP);
+      if (!blocks.length) {
 
-      const timeStampP = document.createElement('p');
-      timeStampP.setInnerText = 'hi';
-      // timeStampP.setInnerText = `Time stamp: ${secondsTime}`;
-      terminal.append(timeStampP);
+        const message = stringToNode(`
+          <div>
+            <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
+            <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
+            <br/>
+          </div>
+        `);
+        // terminal.append(succesus);
+        // terminal.append(incoming);
+        terminal.append(message);
+      }
+      const number = stringToNode(`<p>Block number: ${strBlockNum}</p>`);
+      const time = stringToNode(`<p>Time stamp: ${secondsTime}</p>`);
+      const br = stringToNode('<br/>');
+      terminal.append(number);
+      terminal.append(time);
+      terminal.append(br);
 
-      const time = stringToNode()
 
       blocks.push(blockObj);
     });
   });
 }
-
 
 
 /**
