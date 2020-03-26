@@ -1,22 +1,15 @@
-/* body {
-  background-color: #333;
-} */
 /* 
-#container {
-  width: 70vw;
-  margin: 30vw auto;
-} */
-
+refferences https://codepen.io/FelixRilling/pen/vNJoMy
+ */
 .glitch-outer {
-  min-height: 26px;
+  min-height: 23px;
 }
 
 @media only screen and (max-width: 600px) {
   .glitch-outer {
-    min-height: 23px;
+    min-height: 20px;
   }
 }
-
 
 .b {
   /*Create overlap*/

@@ -37,7 +37,8 @@ export function displayBlock(block, terminal) {
 
 
   const blockDiv = stringToNode(`
-    <div id=${hash} class='glitch-outer'> 
+    <div id=${hash} > 
+
       <div class='glitch-outer'> 
         <p class="b" >Block number: 
           <a href="https://polkascan.io/pre/kusama/block/${number}/">${number}</a>
@@ -49,6 +50,7 @@ export function displayBlock(block, terminal) {
           <a href="https://polkascan.io/pre/kusama/block/${number}/">${number}</a>
         </p>
       </div>
+
       <div class='glitch-outer'>
         <p class="b">Hash: ${hash}</p>
         <p class="b">Hash: ${hash}</p>
