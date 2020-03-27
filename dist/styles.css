@@ -1,11 +1,11 @@
-/* .center {
-  margin: 0 auto;
-} */
 
 body {
   font-family: 'Space Mono', monospace !important;
   background: black !important;
-  color: white
+  color: white;
+  margin: 0!important;
+  text-overflow: ellipsis!important;
+  text-overflow: hidden!important;
 }
 
 .fnt{
@@ -25,8 +25,13 @@ body {
   max-width: 135px;
 }
 
+.logo, main {
+  padding-left: 10px;
+}
+
 p{
   margin: 0;
+  white-space: nowrap;
 }
 
 #terminal{
@@ -46,12 +51,23 @@ p{
   color: #e6007a;
 }
 
+a:hover {
+  color: #e6007a;
+}
+
+a {
+  text-decoration: none;
+  color: rgb(93, 93, 243)
+}
+
+
 header{
   border-bottom: 1px solid  #e6007a;
   box-shadow: 0 5px 40px 40px #141414;
   display: flex;
   justify-content: space-between;
   margin-bottom: 40px;
+  min-width: 100%;
 }
 
 .git {
@@ -66,9 +82,7 @@ a.git {
 }
 
 @media only screen and (max-width: 600px) {
-  .logo{
-    width: 33%;
-  }
+
   body {
     font-size: 13px;
   }
