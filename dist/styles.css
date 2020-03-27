@@ -31,9 +31,7 @@ body {
 
 p{
   margin: 0;
-
-   white-space: nowrap;
-
+  white-space: nowrap;
 }
 
 #terminal{
