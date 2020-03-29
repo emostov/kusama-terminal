@@ -4,21 +4,8 @@ import { displayBlock, successMessage } from './utils';
 
 export const headers = {};
 export const blocks = [];
-// export const nodes = [];
-// export const links = [];
 
 function getTimeInSeconds(block) {
-  // let secondsTime;
-  // // Loop through the blocks extrinsics
-  // block.extrinsics.forEach((ex) => {
-  //   // check to see if the extrinsic is an inherent of set time
-  //   if (ex.callIndex.toString() === '2,0') {
-  //     const intTime = parseInt(ex.args.toString(), 10);
-  //     secondsTime = Math.floor(intTime / 1000);
-  //   }
-  // });
-  // return secondsTime;
-
   const timeEx = block.extrinsics.find(
     (ex) => ex.callIndex.toString() === '2,0',
   );
@@ -43,8 +30,6 @@ export function subscribeToBlockHeaders(api, terminal) {
         // Use the hash to fetch the corresponding block
         api.rpc.chain.getBlock(lastHeader.hash, (data) => {
           const { block } = data;
-          const strBlockNum = block.header.number.toString();
-          const secondsTime = getTimeInSeconds(block);
 
           // Get the previous block data by getting the previous node
           const prevBlock = block[blocks.length - 1];
@@ -57,8 +42,8 @@ export function subscribeToBlockHeaders(api, terminal) {
           // Create block instance
           // Add signed extrinsic count, total event count
           const blockObj = {
-            number: strBlockNum,
-            timeStamp: secondsTime,
+            number: block.header.number.toString(),
+            timeStamp: getTimeInSeconds(block),
             productionTime,
             extrinsicCount: block.extrinsics.length,
             hash: lastHeader.hash,

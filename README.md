@@ -47,32 +47,47 @@ At the time of writing Polkadot has yet to go public with their mainnet.
 
 ### Getting timestamp
 
-In Polkadot, the block is currently divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizablity of Polkadot, this means more then just signed transactions. There are three types of exrinsics: signed transactions (analogous to transaction in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific pre-defined use cases), and inherents. 
+In Polkadot, the block is currently divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizablity of Polkadot, this means more then just signed transactions. There are three types of exrinsics: signed transactions (analogous to transaction in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific use cases, such as creating an account, where there cannot be a key holder), and inherents.
 
-Inherents
+For further refference on intrinsics consult [this page](https://substrate.dev/docs/en/next/conceptual/node/extrinsics) from substrate.dev.
+
+Inherents are added to the block by the author, and are simply accepted as true as long as they seem reasonable. They are not part of the normal transaction pool and are not gossiped. Instead they are just data points for a limited set of potential fields. The three most common inherents I encountered while looking through blocks for this project where ```set``` for time, ```final_hint``` for giving a hint of the best finalized block, and ```set_heads``` which includes canidate reciepts for parachain blocks (essentially minimized proofs of validity).
 
 ```javascript
 
+
 function getTimeInSeconds(block) {
-  let secondsTime;
 
   // Loop through the blocks extrinsics
-  block.extrinsics.forEach((ex) => {
+  const timeEx = block.extrinsics.find(
 
     // Check the call index to see if it is the "set" call, which indicates it
-    // is an inherent and for a timestamp given by the block author.
-    // The call is represented by a hex number, howeber in this case, in order
+    // is an inherent for a timestamp given by the block author.
+    // The call is represented by a hex number, however in this case, in order
     // to get consistent conversion I convert the hex number (which comes
     // across as an array) to a string and compare it to the string "2,0", which
     // is simply what that underlying array converts over to in vanilla js.
-    if (ex.callIndex.toString() === '2,0') {
-      const intTime = parseInt(ex.args.toString(), 10);
+    (ex) => ex.callIndex.toString() === '2,0',
+  );
 
-      // Convert to seconds and round off decimals
-      secondsTime = Math.floor(intTime / 1000);
-    }
-  });
-  return secondsTime;
+  const intTime = parseInt(timeEx.args.toString(), 10);
+
+   // Convert to seconds and round off decimals
+  return Math.floor(intTime / 1000);
+}
+
+```
+
+### Getting Block Author
+
+```javascript
+
+function findAuthor(header, validators) {
+  // Find the first log w
+  const entity = header.digest.logs.find((log) => log.isPreRuntime);
+  const [engine, data] = entity.asPreRuntime;
+  const author = engine.extractAuthor(data, validators);
+  return author.toString();
 }
 
 ```
