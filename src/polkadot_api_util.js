@@ -9,99 +9,104 @@ export const nodes = [];
 export const links = [];
 
 export function subscribeToBlockHeaders(api, terminal) {
-  api.rpc.chain.subscribeNewHeads((lastHeader) => {
-    headers[lastHeader.number] = lastHeader;
+  api.query.session.validators()
+    .then((validators) => {
+      api.rpc.chain.subscribeNewHeads((lastHeader) => {
+        headers[lastHeader.number] = lastHeader;
 
 
+        // console.log(`#${lastHeader.number} was authored by ${lastHeader.author}`);
 
-    console.log(`#${lastHeader.number} was authored by ${lastHeader.author}`);
+        // Use the hash to fetch the corresponding block
+        api.rpc.chain.getBlock(lastHeader.hash, (data) => {
+          const { block } = data;
+          const strBlockNum = block.header.number.toString();
 
-    // Use the hash to fetch the corresponding block
-    api.rpc.chain.getBlock(lastHeader.hash, (data) => {
-      const { block } = data;
-      const strBlockNum = block.header.number.toString();
+          // Loop through the blocks extrinsics
+          let secondsTime;
+          // api.query.authorship.author().then((a) => console.log(a))
 
-      // Loop through the blocks extrinsics
-      let secondsTime;
-      // api.query.authorship.author().then((a) => console.log(a))
+          // console.log(block);
+          block.extrinsics.forEach((ex) => {
+            // check to see if the extrinsic is an inherent of set time
+            if (ex.callIndex.toString() === '2,0') {
+              const intTime = parseInt(ex.args.toString(), 10);
+              secondsTime = Math.floor(intTime / 1000);
+            }
+          });
 
-      // console.log(block);
-      block.extrinsics.forEach((ex) => {
-        // check to see if the extrinsic is an inherent of set time
-        if (ex.callIndex.toString() === '2,0') {
-          const intTime = parseInt(ex.args.toString(), 10);
-          secondsTime = Math.floor(intTime / 1000);
-        }
-      });
+          // Get the previous block data by getting the previous node
+          const prevBlock = block[blocks.length - 1];
 
-      // Get the previous block data by getting the previous node
-      const prevBlock = block[blocks.length - 1];
+          // Get the time between the timestamp of the current block and the
+          // previous block
+          const productionTime = prevBlock && prevBlock.timeStamp
+            ? secondsTime - prevBlock.timeStamp : 6;
 
-      // Get the time between the timestamp of the current block and the
-      // previous block
-      const productionTime = prevBlock && prevBlock.timeStamp
-        ? secondsTime - prevBlock.timeStamp : 6;
+          // Creat block instance
+          // Add signed extrinsic count, total event count
+          const blockObj = {
+            number: strBlockNum,
+            timeStamp: secondsTime,
+            productionTime,
+            extrinsicCount: block.extrinsics.length,
+            hash: lastHeader.hash,
+            parentHash: lastHeader.parentHash,
+          };
+          blocks.push(blockObj);
 
-      // Creat block instance
-      // Add signed extrinsic count, total event count
-      const blockObj = {
-        number: strBlockNum,
-        timeStamp: secondsTime,
-        productionTime,
-        extrinsicCount: block.extrinsics.length,
-        hash: lastHeader.hash,
-        parentHash: lastHeader.parentHash,
-      };
-      blocks.push(blockObj);
-
-      // Create success message and add to DOM
-      if (blocks.length === 1) {
-        const message = stringToNode(`
+          // Create success message and add to DOM
+          if (blocks.length === 1) {
+            const message = stringToNode(`
           <div>
             <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
             <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
             <br/>
           </div>
         `);
-        terminal.append(message);
-      }
+            terminal.append(message);
+          }
 
-      // Add block to terminal node
-      displayBlock(blockObj, terminal);
+          // Add block to terminal node
+          displayBlock(blockObj, terminal);
+        });
+      });
     });
-  });
+
 }
 
-export function findAuthor(api) {
-  api.rpc.chain.subscribeNewHeads((header) => {
-    // console.log(lastHeader.digest);
-    // const digestItem = header && header.digest
-    //   && header.digest.logs.find(({ type }) => type === 'Seal');
-    // // console.log(digestItem);
-    // console.log(digestItem.asSeal);
+// export function findAuthor(api) {
+//   api.rpc.chain.subscribeNewHeads((header) => {
+//     // console.log(new HeaderExtended(header))
+//     // console.log(api.derive.chain.headerExtended()); 
+//     api.query.session.validators((validators) => {
+//       const entity = header.digest.logs.find((log) => log.isPreRuntime);
+//       const [engine, data] = entity.asPreRuntime;
 
-    // let item = header.digest.logs.forEach((log) => console.log(log));
-    // console.log(HeaderExtended()) // (.extractAuthor())
-    // console.log(new HeaderExtended(header))
-    // console.log(api.derive.chain.headerExtended()); 
+//       const author = engine.extractAuthor(data, validators);
+//       console.log(author.toString());
+//     })
+//     console.log('------');
 
+//   });
+// };
 
-    api.query.session.validators((validators) => {
-      const entity = header.digest.logs.filter((log) => {
+function successMessage() {
+  return stringToNode(`
+          <div>
+            <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
+            <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
+            <br/>
+          </div>
+        `);
+}
 
-        // console.log(log)
-        console.log(log.isPreRuntime);
-        return log.isPreRuntime;
-      });
-      console.log(entity);
-    })
-    console.log('------');
-
-    // const digestItem = header && header.digest
-    //   && header.digest.logs.find(({ type }) => type === 'Seal');
-  });
-
-};
+function findAuthor(header, validators) {
+  const entity = header.digest.logs.find((log) => log.isPreRuntime);
+  const [engine, data] = entity.asPreRuntime;
+  const author = engine.extractAuthor(data, validators);
+  return author.toString();
+}
 
 
 /**

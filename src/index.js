@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     .then((api) => {
       subscribeToBlockHeaders(api, terminal);
 
-      findAuthor(api);
+      // findAuthor(api);
     });
 
 });
