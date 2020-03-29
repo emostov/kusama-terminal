@@ -1,12 +1,11 @@
-import { HeaderExtended } from '@polkadot/api-derive';
 
-import { stringToNode, displayBlock, successMessage } from './utils';
+import { displayBlock, successMessage } from './utils';
 
 
 export const headers = {};
 export const blocks = [];
-export const nodes = [];
-export const links = [];
+// export const nodes = [];
+// export const links = [];
 
 function getTimeInSeconds(block) {
   let secondsTime;
@@ -72,41 +71,6 @@ export function subscribeToBlockHeaders(api, terminal) {
       });
     });
 }
-
-// export function findAuthor(api) {
-//   api.rpc.chain.subscribeNewHeads((header) => {
-//     // console.log(new HeaderExtended(header))
-//     // console.log(api.derive.chain.headerExtended()); 
-//     api.query.session.validators((validators) => {
-//       const entity = header.digest.logs.find((log) => log.isPreRuntime);
-//       const [engine, data] = entity.asPreRuntime;
-
-//       const author = engine.extractAuthor(data, validators);
-//       console.log(author.toString());
-//     })
-//     console.log('------');
-
-//   });
-// };
-
-// function successMessage() {
-//   return stringToNode(`
-//           <div>
-//             <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
-//             <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
-//             <br/>
-//           </div>
-//         `);
-// }
-
-
-
-// function findAuthor(header, validators) {
-//   const entity = header.digest.logs.find((log) => log.isPreRuntime);
-//   const [engine, data] = entity.asPreRuntime;
-//   const author = engine.extractAuthor(data, validators);
-//   return author.toString();
-// }
 
 
 /**
