@@ -1,6 +1,8 @@
+// https://emostov.github.io/kusama-terminal/dist/
+
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-import { subscribeToBlockHeaders } from './polkadot_api_util';
+import { subscribeToBlockHeaders, findAuthor } from './polkadot_api_util';
 import { stringToNode, displayCurrentTime } from './utils';
 
 const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io/');
@@ -23,5 +25,8 @@ window.addEventListener('DOMContentLoaded', () => {
     .create({ provider: wsProvider })
     .then((api) => {
       subscribeToBlockHeaders(api, terminal);
+
+      findAuthor(api);
     });
+
 });

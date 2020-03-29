@@ -1,5 +1,7 @@
+import { HeaderExtended } from '@polkadot/api-derive';
 
 import { stringToNode, displayBlock } from './utils';
+
 
 export const headers = {};
 export const blocks = [];
@@ -10,7 +12,11 @@ export function subscribeToBlockHeaders(api, terminal) {
   api.rpc.chain.subscribeNewHeads((lastHeader) => {
     headers[lastHeader.number] = lastHeader;
 
-    console.log(lastHeader.toString());
+    console.log(api.query.session.validators((validators) => {
+
+    })
+
+    console.log(`#${lastHeader.number} was authored by ${lastHeader.author}`);
 
     // Use the hash to fetch the corresponding block
     api.rpc.chain.getBlock(lastHeader.hash, (data) => {
@@ -19,7 +25,9 @@ export function subscribeToBlockHeaders(api, terminal) {
 
       // Loop through the blocks extrinsics
       let secondsTime;
-      console.log(block.extrinsics.toString());
+      // api.query.authorship.author().then((a) => console.log(a))
+
+      // console.log(block);
       block.extrinsics.forEach((ex) => {
         // check to see if the extrinsic is an inherent of set time
         if (ex.callIndex.toString() === '2,0') {
@@ -47,7 +55,8 @@ export function subscribeToBlockHeaders(api, terminal) {
         parentHash: lastHeader.parentHash,
       };
       blocks.push(blockObj);
-      // Create DOM elemnts to add and add to DOM
+
+      // Create success message and add to DOM
       if (blocks.length === 1) {
         const message = stringToNode(`
           <div>
@@ -65,6 +74,26 @@ export function subscribeToBlockHeaders(api, terminal) {
   });
 }
 
+export function findAuthor(api) {
+  api.rpc.chain.subscribeNewHeads((header) => {
+    // console.log(lastHeader.digest);
+    // const digestItem = header && header.digest
+    //   && header.digest.logs.find(({ type }) => type === 'Seal');
+    // // console.log(digestItem);
+    // console.log(digestItem.asSeal);
+
+    // let item = header.digest.logs.forEach((log) => console.log(log));
+    // console.log(HeaderExtended()) // (.extractAuthor())
+    // console.log(new HeaderExtended(header))
+    // console.log(api.derive.chain.headerExtended()); 
+    console.log('------');
+
+    // const digestItem = header && header.digest
+    //   && header.digest.logs.find(({ type }) => type === 'Seal');
+  });
+
+};
+
 
 /**
  * Notes:
@@ -73,4 +102,12 @@ export function subscribeToBlockHeaders(api, terminal) {
  * and
  * Conclusion: They are inherents and are thus no sig. Still not sure on whoe
  * the signer is.
+ *
+ * Trying to find block author:
+ *
+ * api.rpc.chain.subscribeNewHeads((lastHeader)
+ *  lastHeader.author ---> returns undefined
+ *
+ * looked through logs -> cannot find anything that says it is 'consensus'
+ *
  */
