@@ -24,6 +24,16 @@ export function displayCurrentTime() {
   return displayTime(now);
 }
 
+export function successMessage() {
+  return stringToNode(`
+          <div>
+            <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
+            <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
+            <br/>
+          </div>
+        `);
+}
+
 export function displayBlock(block, terminal) {
   const {
     number,

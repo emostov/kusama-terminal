@@ -1,12 +1,32 @@
 import { HeaderExtended } from '@polkadot/api-derive';
 
-import { stringToNode, displayBlock } from './utils';
+import { stringToNode, displayBlock, successMessage } from './utils';
 
 
 export const headers = {};
 export const blocks = [];
 export const nodes = [];
 export const links = [];
+
+function getTimeInSeconds(block) {
+  let secondsTime;
+  // Loop through the blocks extrinsics
+  block.extrinsics.forEach((ex) => {
+    // check to see if the extrinsic is an inherent of set time
+    if (ex.callIndex.toString() === '2,0') {
+      const intTime = parseInt(ex.args.toString(), 10);
+      secondsTime = Math.floor(intTime / 1000);
+    }
+  });
+  return secondsTime;
+}
+
+function findAuthor(header, validators) {
+  const entity = header.digest.logs.find((log) => log.isPreRuntime);
+  const [engine, data] = entity.asPreRuntime;
+  const author = engine.extractAuthor(data, validators);
+  return author.toString();
+}
 
 export function subscribeToBlockHeaders(api, terminal) {
   api.query.session.validators()
@@ -21,19 +41,7 @@ export function subscribeToBlockHeaders(api, terminal) {
         api.rpc.chain.getBlock(lastHeader.hash, (data) => {
           const { block } = data;
           const strBlockNum = block.header.number.toString();
-
-          // Loop through the blocks extrinsics
-          let secondsTime;
-          // api.query.authorship.author().then((a) => console.log(a))
-
-          // console.log(block);
-          block.extrinsics.forEach((ex) => {
-            // check to see if the extrinsic is an inherent of set time
-            if (ex.callIndex.toString() === '2,0') {
-              const intTime = parseInt(ex.args.toString(), 10);
-              secondsTime = Math.floor(intTime / 1000);
-            }
-          });
+          const secondsTime = getTimeInSeconds(block);
 
           // Get the previous block data by getting the previous node
           const prevBlock = block[blocks.length - 1];
@@ -57,14 +65,7 @@ export function subscribeToBlockHeaders(api, terminal) {
 
           // Create success message and add to DOM
           if (blocks.length === 1) {
-            const message = stringToNode(`
-          <div>
-            <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
-            <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
-            <br/>
-          </div>
-        `);
-            terminal.append(message);
+            terminal.append(successMessage());
           }
 
           // Add block to terminal node
@@ -72,7 +73,6 @@ export function subscribeToBlockHeaders(api, terminal) {
         });
       });
     });
-
 }
 
 // export function findAuthor(api) {
@@ -91,22 +91,24 @@ export function subscribeToBlockHeaders(api, terminal) {
 //   });
 // };
 
-function successMessage() {
-  return stringToNode(`
-          <div>
-            <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
-            <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
-            <br/>
-          </div>
-        `);
-}
+// function successMessage() {
+//   return stringToNode(`
+//           <div>
+//             <p class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Connection succesful.</p>
+//             <p  class='c-msg'> &nbsp;&nbsp; <span>></span> &nbsp;Blocks incoming.</p>
+//             <br/>
+//           </div>
+//         `);
+// }
 
-function findAuthor(header, validators) {
-  const entity = header.digest.logs.find((log) => log.isPreRuntime);
-  const [engine, data] = entity.asPreRuntime;
-  const author = engine.extractAuthor(data, validators);
-  return author.toString();
-}
+
+
+// function findAuthor(header, validators) {
+//   const entity = header.digest.logs.find((log) => log.isPreRuntime);
+//   const [engine, data] = entity.asPreRuntime;
+//   const author = engine.extractAuthor(data, validators);
+//   return author.toString();
+// }
 
 
 /**
