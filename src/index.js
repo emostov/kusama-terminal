@@ -2,7 +2,7 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-import { subscribeToBlockHeaders, findAuthor } from './polkadot_api_util';
+import { subscribeToBlockHeaders } from './polkadot_api_util';
 import { stringToNode, displayCurrentTime } from './utils';
 
 const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io/');
