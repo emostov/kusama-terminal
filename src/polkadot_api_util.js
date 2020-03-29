@@ -33,10 +33,7 @@ export function subscribeToBlockHeaders(api, terminal) {
     .then((validators) => {
       api.rpc.chain.subscribeNewHeads((lastHeader) => {
         headers[lastHeader.number] = lastHeader;
-
-
-        // console.log(`#${lastHeader.number} was authored by ${lastHeader.author}`);
-
+        const author = findAuthor(lastHeader, validators);
         // Use the hash to fetch the corresponding block
         api.rpc.chain.getBlock(lastHeader.hash, (data) => {
           const { block } = data;
@@ -51,7 +48,7 @@ export function subscribeToBlockHeaders(api, terminal) {
           const productionTime = prevBlock && prevBlock.timeStamp
             ? secondsTime - prevBlock.timeStamp : 6;
 
-          // Creat block instance
+          // Create block instance
           // Add signed extrinsic count, total event count
           const blockObj = {
             number: strBlockNum,
@@ -60,6 +57,7 @@ export function subscribeToBlockHeaders(api, terminal) {
             extrinsicCount: block.extrinsics.length,
             hash: lastHeader.hash,
             parentHash: lastHeader.parentHash,
+            author,
           };
           blocks.push(blockObj);
 

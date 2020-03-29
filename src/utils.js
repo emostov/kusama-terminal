@@ -41,7 +41,8 @@ export function displayBlock(block, terminal) {
     productionTime,
     extrinsicCount,
     hash,
-    parentHash
+    parentHash,
+    author,
   } = block;
 
   const blockDiv = stringToNode(`
@@ -83,6 +84,18 @@ export function displayBlock(block, terminal) {
         <p class="b">Time stamp: ${displayBlockTime(timeStamp * 1000)}</p>
       </div>
 
+      <div class='glitch-outer'>
+        <p class="b" >Author:
+          <a href="https://polkascan.io/pre/kusama/account/${number}/">${author}</a>
+        </p>
+        <p class="b" >Author:
+          <a href="https://polkascan.io/pre/kusama/account/${author}/">${author}</a>
+        </p>
+        <p class="b" >Author:
+          <a href="https://polkascan.io/pre/kusama/account/${author}/">${author}</a>
+        </p>
+      </div>
+
       <div class='glitch-outer'> 
         <p class="b">Production Time: ${productionTime} secs</p>
         <p class="b">Production Time: ${productionTime} secs</p>
@@ -104,5 +117,5 @@ export function displayBlock(block, terminal) {
 
 
   terminal.append(blockDiv);
-}
+};
 
