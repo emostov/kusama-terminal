@@ -8,16 +8,23 @@ export const blocks = [];
 // export const links = [];
 
 function getTimeInSeconds(block) {
-  let secondsTime;
-  // Loop through the blocks extrinsics
-  block.extrinsics.forEach((ex) => {
-    // check to see if the extrinsic is an inherent of set time
-    if (ex.callIndex.toString() === '2,0') {
-      const intTime = parseInt(ex.args.toString(), 10);
-      secondsTime = Math.floor(intTime / 1000);
-    }
-  });
-  return secondsTime;
+  // let secondsTime;
+  // // Loop through the blocks extrinsics
+  // block.extrinsics.forEach((ex) => {
+  //   // check to see if the extrinsic is an inherent of set time
+  //   if (ex.callIndex.toString() === '2,0') {
+  //     const intTime = parseInt(ex.args.toString(), 10);
+  //     secondsTime = Math.floor(intTime / 1000);
+  //   }
+  // });
+  // return secondsTime;
+
+  const timeEx = block.extrinsics.find(
+    (ex) => ex.callIndex.toString() === '2,0',
+  );
+
+  const intTime = parseInt(timeEx.args.toString(), 10);
+  return Math.floor(intTime / 1000);
 }
 
 function findAuthor(header, validators) {
