@@ -12,9 +12,7 @@ export function subscribeToBlockHeaders(api, terminal) {
   api.rpc.chain.subscribeNewHeads((lastHeader) => {
     headers[lastHeader.number] = lastHeader;
 
-    console.log(api.query.session.validators((validators) => {
 
-    })
 
     console.log(`#${lastHeader.number} was authored by ${lastHeader.author}`);
 
@@ -86,6 +84,17 @@ export function findAuthor(api) {
     // console.log(HeaderExtended()) // (.extractAuthor())
     // console.log(new HeaderExtended(header))
     // console.log(api.derive.chain.headerExtended()); 
+
+
+    api.query.session.validators((validators) => {
+      const entity = header.digest.logs.filter((log) => {
+
+        // console.log(log)
+        console.log(log.isPreRuntime);
+        return log.isPreRuntime;
+      });
+      console.log(entity);
+    })
     console.log('------');
 
     // const digestItem = header && header.digest
