@@ -1,8 +1,6 @@
 
 import { displayBlock, successMessage } from './utils';
 
-
-export const headers = {};
 export const blocks = [];
 
 function getTimeInSeconds(block) {
@@ -25,7 +23,6 @@ export function subscribeToBlockHeaders(api, terminal) {
   api.query.session.validators()
     .then((validators) => {
       api.rpc.chain.subscribeNewHeads((lastHeader) => {
-        headers[lastHeader.number] = lastHeader;
         const author = findAuthor(lastHeader, validators);
         // Use the hash to fetch the corresponding block
         api.rpc.chain.getBlock(lastHeader.hash, (data) => {

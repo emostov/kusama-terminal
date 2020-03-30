@@ -47,14 +47,13 @@ At the time of writing Polkadot has yet to go public with their mainnet.
 
 ### Getting timestamp
 
-In Polkadot, the block is currently divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizablity of Polkadot, this means more then just signed transactions. There are three types of exrinsics: signed transactions (analogous to transaction in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific use cases, such as creating an account, where there cannot be a key holder), and inherents.
+In Polkadot, the block is divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizablity of Polkadot, this means more then just signed transactions. There are three types of exrinsics: signed transactions (analogous to transaction in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific use cases, such as creating an account, where there cannot be a key holder), and inherents.
 
 For further refference on intrinsics consult [this page](https://substrate.dev/docs/en/next/conceptual/node/extrinsics) from substrate.dev.
 
 Inherents are added to the block by the author, and are simply accepted as true as long as they seem reasonable. They are not part of the normal transaction pool and are not gossiped. Instead they are just data points for a limited set of potential fields. The three most common inherents I encountered while looking through blocks for this project where ```set``` for time, ```final_hint``` for giving a hint of the best finalized block, and ```set_heads``` which includes canidate reciepts for parachain blocks (essentially minimized proofs of validity).
 
 ```javascript
-
 
 function getTimeInSeconds(block) {
 
@@ -80,14 +79,90 @@ function getTimeInSeconds(block) {
 
 ### Getting Block Author
 
+In Polkadot, the minimal requirements for a block are designed to be as generic as possible. For example, there may be a parachain that does not have the notion of a block author. For this reason, block author is not an explicit field in the header, and instead can be found in the logs of the ```DigestItem```. The idea behind the code below is to extract the consensus engine ID and a number from the log, and then, using the current validator set, key into with the number and get the ```AccountId``` in return.
+
 ```javascript
 
 function findAuthor(header, validators) {
-  // Find the first log w
+
+  // Find the PreRunTime entry in the logs of the DigestItem. N.B. This is for
+  // substrate 2.0. Substrate 1.0 we would look for the Consensus entry in the
+  // logs. I have not verified this though for Substrate 1.0
+  // For more reference on the DigestItem consult
+  // https://github.com/paritytech/substrate/blob/master/primitives/runtime/src/generic/digest.rs
   const entity = header.digest.logs.find((log) => log.isPreRuntime);
+  
+  // Destructure the array stored under asPreRunTime to pull out the consensus
+  // engine id and the data. In this case the consensus engine is presumably BABE
   const [engine, data] = entity.asPreRuntime;
+
+  // With the consensus engine id, we know how to use the data to key
+  // into the right spot in the validator set and extract the author. I rely on
+  // the extractAuthor method from the engine to do this. To be clear, at the
+  // time of writing I have not found documentation for the extractAuthor method
+  // so I am not positive how it works. I found the method in
+  // https://github.com/polkadot-js/api/blob/master/packages/api-derive/src/type/HeaderExtended.ts
   const author = engine.extractAuthor(data, validators);
   return author.toString();
+}
+
+```
+
+### Subscibe To Latest Blocks
+
+Once the api instance is set up using the Kusama websocket provider, I querry for the validatorSet so I can use it later when finding the block author. Then I subscribe to new headers using a convenient built in method api.rpc.chain.subscribeNewHeads(). I then use the hash from the header to querry again for the latest block, which gives a full block - both header and intrinsics. While this is redundant, I have not come up with a better way to do it at this time.
+
+```javascript
+
+// Takes in the api object and the terminal, a DOM node for later use
+export function subscribeToBlockHeaders(api, terminal) {
+
+  // Get the validators to use later
+  api.query.session.validators()
+    .then((validators) => {
+      api.rpc.chain.subscribeNewHeads((lastHeader) => {
+
+        // Get the block author from the method in the earlier section
+        const author = findAuthor(lastHeader, validators);
+
+        // Use the hash to fetch the corresponding block
+        api.rpc.chain.getBlock(lastHeader.hash, (data) => {
+          const { block } = data;
+
+          // Get the previous block data by getting the previous node
+          const prevBlock = block[blocks.length - 1];
+
+          // Get the time between the timestamp of the current block and the
+          // previous block
+          const productionTime = prevBlock && prevBlock.timeStamp
+            ? secondsTime - prevBlock.timeStamp : 6;
+
+          // Create block instance so we can pass the info we care about around
+          // and store it for later
+          const blockObj = {
+            number: block.header.number.toString(),
+            timeStamp: getTimeInSeconds(block),
+            productionTime,
+            extrinsicCount: block.extrinsics.length,
+            hash: lastHeader.hash,
+            parentHash: lastHeader.parentHash,
+            author,
+          };
+
+          // Save block so we can refference it when the next block comes to
+          // calculate the time deltas
+          blocks.push(blockObj);
+
+          // Create success message and add to terminal node
+          if (blocks.length === 1) {
+            terminal.append(successMessage());
+          }
+
+          // Add html for block to terminal node using a function from utils.js
+          displayBlock(blockObj, terminal);
+        });
+      });
+    });
 }
 
 ```
