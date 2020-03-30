@@ -47,6 +47,8 @@ At the time of writing Polkadot has yet to go public with their mainnet.
 
 ### Getting timestamp
 
+###### [Jump to next highlight](#getting-block-author)
+
 In Polkadot, the block is divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizablity of Polkadot, this means more then just signed transactions. There are three types of exrinsics: signed transactions (analogous to transaction in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific use cases, such as creating an account, where there cannot be a key holder), and inherents.
 
 For further refference on intrinsics consult [this page](https://substrate.dev/docs/en/next/conceptual/node/extrinsics) from substrate.dev.
@@ -78,6 +80,8 @@ function getTimeInSeconds(block) {
 ```
 
 ### Getting Block Author
+
+###### [Jump to next highlight](#subscibe-to-latest-blocks)
 
 In Polkadot, the minimal requirements for a block are designed to be as generic as possible. For example, there may be a parachain that does not have the notion of a block author. For this reason, block author is not an explicit field in the header, and instead can be found in the logs of the ```DigestItem```. The idea behind the code below is to extract the consensus engine ID and a number from the log, and then, using the current validator set, key into with the number and get the ```AccountId``` in return.
 
