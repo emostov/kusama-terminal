@@ -1,23 +1,15 @@
 
 import { displayBlock, successMessage } from './utils';
 
-
-export const headers = {};
 export const blocks = [];
-// export const nodes = [];
-// export const links = [];
 
 function getTimeInSeconds(block) {
-  let secondsTime;
-  // Loop through the blocks extrinsics
-  block.extrinsics.forEach((ex) => {
-    // check to see if the extrinsic is an inherent of set time
-    if (ex.callIndex.toString() === '2,0') {
-      const intTime = parseInt(ex.args.toString(), 10);
-      secondsTime = Math.floor(intTime / 1000);
-    }
-  });
-  return secondsTime;
+  const timeEx = block.extrinsics.find(
+    (ex) => ex.callIndex.toString() === '2,0',
+  );
+
+  const intTime = parseInt(timeEx.args.toString(), 10);
+  return Math.floor(intTime / 1000);
 }
 
 function findAuthor(header, validators) {
@@ -27,20 +19,25 @@ function findAuthor(header, validators) {
   return author.toString();
 }
 
+// Takes in the api object and the terminal, a DOM node for later use
 export function subscribeToBlockHeaders(api, terminal) {
+
+  // Get the validators to use later
   api.query.session.validators()
     .then((validators) => {
       api.rpc.chain.subscribeNewHeads((lastHeader) => {
-        headers[lastHeader.number] = lastHeader;
+
+        // Get the block author from the method in the earlier section
         const author = findAuthor(lastHeader, validators);
+
         // Use the hash to fetch the corresponding block
         api.rpc.chain.getBlock(lastHeader.hash, (data) => {
           const { block } = data;
-          const strBlockNum = block.header.number.toString();
-          const secondsTime = getTimeInSeconds(block);
 
           // Get the previous block data by getting the previous node
           const prevBlock = block[blocks.length - 1];
+
+          const secondsTime = getTimeInSeconds(block);
 
           // Get the time between the timestamp of the current block and the
           // previous block
@@ -50,7 +47,7 @@ export function subscribeToBlockHeaders(api, terminal) {
           // Create block instance
           // Add signed extrinsic count, total event count
           const blockObj = {
-            number: strBlockNum,
+            number: block.header.number.toString(),
             timeStamp: secondsTime,
             productionTime,
             extrinsicCount: block.extrinsics.length,
