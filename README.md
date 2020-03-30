@@ -95,15 +95,17 @@ function findAuthor(header, validators) {
   const entity = header.digest.logs.find((log) => log.isPreRuntime);
   
   // Destructure the array stored under asPreRunTime to pull out the consensus
-  // engine id and the data. In this case the consensus engine is presumably BABE
+  // engine id and the data. The consensus engine id is either AURA, BABE, or
+  // Granpa and is represented by a 4-byte identifier. It is important to know
+  // the engine in this case because it will inform how we use the byte data to
+  // key into the validator set.
+  // For more information on the ConsesnsuEngineID consult 
+  // https://github.com/polkadot-js/api/blob/master/packages/types/src/generic/ConsensusEngineId.tsq
   const [engine, data] = entity.asPreRuntime;
 
   // With the consensus engine id, we know how to use the data to key
   // into the right spot in the validator set and extract the author. I rely on
-  // the extractAuthor method from the engine to do this. To be clear, at the
-  // time of writing I have not found documentation for the extractAuthor method
-  // so I am not positive how it works. I found the method in
-  // https://github.com/polkadot-js/api/blob/master/packages/api-derive/src/type/HeaderExtended.ts
+  // the extractAuthor from the ConsensusEngineId class
   const author = engine.extractAuthor(data, validators);
   return author.toString();
 }

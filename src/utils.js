@@ -117,5 +117,6 @@ export function displayBlock(block, terminal) {
 
 
   terminal.append(blockDiv);
+  blockDiv.scrollIntoView();
 };
 
