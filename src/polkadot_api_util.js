@@ -19,17 +19,25 @@ function findAuthor(header, validators) {
   return author.toString();
 }
 
+// Takes in the api object and the terminal, a DOM node for later use
 export function subscribeToBlockHeaders(api, terminal) {
+
+  // Get the validators to use later
   api.query.session.validators()
     .then((validators) => {
       api.rpc.chain.subscribeNewHeads((lastHeader) => {
+
+        // Get the block author from the method in the earlier section
         const author = findAuthor(lastHeader, validators);
+
         // Use the hash to fetch the corresponding block
         api.rpc.chain.getBlock(lastHeader.hash, (data) => {
           const { block } = data;
 
           // Get the previous block data by getting the previous node
           const prevBlock = block[blocks.length - 1];
+
+          const secondsTime = getTimeInSeconds(block);
 
           // Get the time between the timestamp of the current block and the
           // previous block
@@ -40,7 +48,7 @@ export function subscribeToBlockHeaders(api, terminal) {
           // Add signed extrinsic count, total event count
           const blockObj = {
             number: block.header.number.toString(),
-            timeStamp: getTimeInSeconds(block),
+            timeStamp: secondsTime,
             productionTime,
             extrinsicCount: block.extrinsics.length,
             hash: lastHeader.hash,

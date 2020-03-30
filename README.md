@@ -132,6 +132,9 @@ export function subscribeToBlockHeaders(api, terminal) {
           // Get the previous block data by getting the previous node
           const prevBlock = block[blocks.length - 1];
 
+          // Get the blocks time stamp in seconds
+          const secondsTime = getTimeInSeconds(block);
+
           // Get the time between the timestamp of the current block and the
           // previous block
           const productionTime = prevBlock && prevBlock.timeStamp
@@ -141,7 +144,7 @@ export function subscribeToBlockHeaders(api, terminal) {
           // and store it for later
           const blockObj = {
             number: block.header.number.toString(),
-            timeStamp: getTimeInSeconds(block),
+            timeStamp: secondsTime,
             productionTime,
             extrinsicCount: block.extrinsics.length,
             hash: lastHeader.hash,
