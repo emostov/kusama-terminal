@@ -18,15 +18,15 @@ A live block feed for Polkadot's canary network, Kusama.
 
 ###### [Jump to Technologies](#technologies)
 
-The aim of this project was to learn about Polkadot, Substrate, and the role of Kusama in devloping Polkadot. I find Polkadot exciting because its approach to chain interopability seems to have potential for broadening the practical use of blockchain, and reducing bounds of scalability found in other projects.
+The aim of this project was to learn about Polkadot, Substrate, and the role of Kusama in developing Polkadot. I find Polkadot exciting because its approach to chain interoperability seems to have potential for broadening the practical use of blockchain, and reducing bounds of scalability found in other projects.
 
-My journey for this project brought me to participate in Parities Riot chat rooms, read through depths of Paritie's and Web3 Foundation's documentation, and scour the quickly evolving codebases of Substrate (Rust) and Polkadot.js (TypeScript). While not neccesarily reflected directly in the scripts for this project, I was able to significantly further my understanding of Polkadot's NPoS protocol and their various solutions for chain interopability.
+My journey for this project brought me to participate in Paritie's Riot chat rooms, read through depths of Paritie's and Web3 Foundation's documentation, and scour the quickly evolving codebases of Substrate (Rust) and Polkadot.js (TypeScript). While not necessarily reflected directly in the scripts for this project, I was able to significantly further my understanding of Polkadot's NPoS protocol and their various solutions for chain interoperability.
 
-Much of the challenges from this project where due to the quickly evolving nature of Polkadot's ecosystem, the resulting gaps in documentation, and minimal resources in general compared to the ecosystems surrounding more matured protocols. This made it a good oppurtunity for me to work on my skills of reading through GitHub codebases.
+Much of the challenges from this project were due to the quickly evolving nature of Polkadot's ecosystem, the resulting gaps in documentation, and minimal resources in general compared to the ecosystems surrounding more mature protocols. This made it a good opportunity for me to work on my skills of reading through GitHub codebases.
 
-The publically tangible result of my research is this quick project. I eschewed any frontend frameworks, and instead decided to keep it as simple as possible. The idea for the site is to provide a very simple and aestheticaly appealing interface that gives a pulse about the state of the newest blocks.
+The publicly tangible result of my research is this quick project. I eschewed any frontend frameworks, and instead decided to keep it as simple as possible. The idea for the site is to provide a very simple and aesthetically appealing interface that gives a pulse about the state of the newest blocks.
 
-The block feed mimics the appearance of a modern Mac terminal. The terminal updates upon succesful connection to Kussama, and subsequently updates the block feed as new blocks come in. The feed displays essential information, with things such as block author and timestamp, which are not trivial to extract. Some fields, such as block author, link to the relevant page on Polkascan so the user can get more info if desired.
+The block feed mimics the appearance of a modern Mac terminal. The terminal updates upon successful connection to Kusama, and subsequently updates the block feed as new blocks come in. The feed displays essential information, with things such as block author and timestamp, which are not trivial to extract. Some fields, such as block author, link to the relevant page on Polkascan so the user can get more info if desired.
 
 ---
 
@@ -36,7 +36,7 @@ The block feed mimics the appearance of a modern Mac terminal. The terminal upda
 
 * Kusama
 * Polkadotjs
-* Vanila Javascript
+* Vanilla JavaScript
 * Webpack
 
 ---
@@ -47,13 +47,14 @@ The block feed mimics the appearance of a modern Mac terminal. The terminal upda
 
 ###### [Jump to next highlight](#getting-block-author)
 
-In Polkadot, the block is divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizablity of Polkadot, this means more then just signed transactions. There are three types of exrinsics: signed transactions (analogous to transaction in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific use cases, such as creating an account, where there cannot be a key holder), and inherents.
+In Polkadot, the block is divided into two main parts, Header and Extrinsics. Extrinsics represent any information that is external to the blockchain. Because of the generalizability of Polkadot, this means more than just signed transactions. There are three types of extrinsics:: signed transactions (analogous to transactions in Bitcoin, Ethereum etc.), unsigned transactions (used for a few specific use cases, such as creating an account, where there cannot be a key holder), and inherents.
 
-For further refference on intrinsics consult [this page](https://substrate.dev/docs/en/next/conceptual/node/extrinsics) from substrate.dev.
+For further references on intrinsics consult [this page](https://substrate.dev/docs/en/next/conceptual/node/extrinsics) from substrate.dev.
 
-Inherents are added to the block by the author, and are simply accepted as true as long as they seem reasonable. They are not part of the normal transaction pool and are not gossiped. Instead they are just data points for a limited set of potential fields. The three most common inherents I encountered while looking through blocks for this project where ```set``` for time, ```final_hint``` for giving a hint of the best finalized block, and ```set_heads``` which includes canidate reciepts for parachain blocks (essentially minimized proofs of validity).
+Inherents are added to the block by the author, and are simply accepted as true as long as they seem reasonable. They are not part of the normal transaction pool and are not gossiped. Instead they are just data points for a limited set of potential fields. The three most common inherents I encountered while looking through blocks for this project where ```set``` for time, ```final_hint``` for giving a hint of the best finalized block, and ```set_heads``` which includes candidate reciepts for parachain blocks (essentially minimized proofs of validity).
 
 ```javascript
+// src/polkadot_api_util.js
 
 function getTimeInSeconds(block) {
 
@@ -79,7 +80,7 @@ function getTimeInSeconds(block) {
 
 ### Getting Block Author
 
-###### [Jump to next highlight](#subscibe-to-latest-blocks)
+###### [Jump to next highlight](#subscribe-to-latest-blocks)
 
 In Polkadot, the minimal requirements for a block are designed to be as generic as possible. For example, there may be a parachain that does not have the notion of a block author. For this reason, block author is not an explicit field in the header, and instead can be found in the logs of the ```DigestItem```. The idea behind the code below is to extract the consensus engine ID and a number from the log, and then, using the current validator set, key into with the number and get the ```AccountId``` in return.
 
@@ -112,9 +113,9 @@ function findAuthor(header, validators) {
 
 ```
 
-### Subscibe To Latest Blocks
+### Subscribe To Latest Blocks
 
-Once the api instance is set up using the Kusama websocket provider, I querry for the validatorSet so I can use it later when finding the block author. Then I subscribe to new headers using a convenient built in method api.rpc.chain.subscribeNewHeads(). I then use the hash from the header to querry again for the latest block, which gives a full block - both header and intrinsics. While this is redundant, I have not come up with a better way to do it at this time.
+Once the api instance is set up using the Kusama websocket provider, I query for the validatorSet so I can use it later when finding the block author. Then I subscribe to new headers using a convenient built in method api.rpc.chain.subscribeNewHeads(). I then use the hash from the header to query again for the latest block, which gives a full block - both header and intrinsics. While this is redundant, I have not come up with a better way to do it at this time.
 
 ```javascript
 
