@@ -89,11 +89,15 @@ a.git {
   border-color: black!important;
   filter: brightness(75%);
 }
-.btn.about{
 
+.btn.about{
   padding-right: 0px;
   padding-left: 0px;
 }
+
+/* .modal-content{
+  background-color: #e6007a;
+} */
 
 
 
