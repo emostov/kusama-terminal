@@ -95,6 +95,20 @@ a.git {
   padding-left: 0px;
 }
 
+.modal-content{
+  color: black;
+  background-image: linear-gradient(to bottom right, #e6007a, white);
+}
+
+.bird{
+  width:45px;
+}
+
+.header-text{
+  display: flex;
+  align-items: center!important;
+}
+
 /* .modal-content{
   background-color: #e6007a;
 } */
