@@ -73,15 +73,29 @@ header{
 }
 
 .git {
-  height: 25px;
+  height: 30px;
   cursor: pointer;
   padding: 5px;
+  padding-right: 10px;
   filter: brightness(80%);
 }
 
 a.git {
   height: 35px;
 }
+
+.btn-secondary {
+  background-color: black!important;
+  border-color: black!important;
+  filter: brightness(75%);
+}
+.btn.about{
+
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+
 
 @media only screen and (max-width: 600px) {
 

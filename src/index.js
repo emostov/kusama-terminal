@@ -9,8 +9,17 @@ const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io/');
 
 window.addEventListener('DOMContentLoaded', () => {
   const terminal = document.getElementById('terminal');
+  $('#aboutModal').modal('show');
+  console.log($('#aboutModal'))
 
-  // Create welcome message
+  // const modal = document.getElementById('aboutModal');
+  // console.log(modal)
+  // console.log(terminal)
+  // // setTimeout(() => {
+  //   modal.classList.add('show');
+  // // }, 5 * 1000);
+  // // Create welcome message
+
   const welcomeMsg = stringToNode(
     `<div> 
       <p>Last login: ${displayCurrentTime()} on ttys003</p>
@@ -28,5 +37,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
       // findAuthor(api);
     });
-
 });
