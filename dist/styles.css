@@ -32,7 +32,7 @@ body {
 p{
   margin: 0;
   white-space: nowrap;
-   text-overflow: ellipsis!important;
+  text-overflow: ellipsis!important;
   text-overflow: hidden!important;
 }
 
@@ -98,6 +98,9 @@ a.git {
 .modal-content{
   color: black;
   background-image: linear-gradient(to bottom right, #e6007a, white);
+  overflow-wrap: break-word!important;
+  word-wrap: break-word!important;
+  hyphens: auto!important;
 }
 
 .bird{
@@ -109,9 +112,11 @@ a.git {
   align-items: center!important;
 }
 
-/* .modal-content{
-  background-color: #e6007a;
-} */
+.roboto{
+  font-family: 'Roboto', sans-serif;
+}
+
+
 
 
 
