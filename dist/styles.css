@@ -8,6 +8,10 @@ body {
   text-overflow: hidden!important;
 }
 
+.space{
+  font-family: 'Space Mono', monospace !important;
+}
+
 .fnt{
   font-family: 'Space Mono', monospace;
 }
@@ -27,6 +31,10 @@ body {
 
 .logo, main {
   padding-left: 10px;
+}
+
+main{
+  top: 65px;
 }
 
 p{
@@ -70,6 +78,10 @@ header{
   justify-content: space-between;
   margin-bottom: 40px;
   min-width: 100%;
+  position:fixed;
+  top:0;
+  width: 100%;
+  background-color: black;
 }
 
 .git {
@@ -97,7 +109,7 @@ a.git {
 
 .modal-content{
   color: black;
-  background-image: linear-gradient(to bottom right, #e6007a, white);
+  background-image: linear-gradient(to bottom right, #e6007a , white);
   overflow-wrap: break-word!important;
   word-wrap: break-word!important;
   hyphens: auto!important;
@@ -114,6 +126,11 @@ a.git {
 
 .roboto{
   font-family: 'Roboto', sans-serif;
+}
+
+.space-between{
+  display: flex;
+  justify-content: space-between;
 }
 
 
